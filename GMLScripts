@@ -1,4 +1,4 @@
-#region general
+#region General
 function chance(percent,decimalplaces = 2){
 	temp = irandom_range(1,power(10,decimalplaces+2))
 	return temp/(power(10,decimalplaces)) <= percent
@@ -32,6 +32,14 @@ function InRangeRelative(value,basevalue,lowerbound,upperbound = lowerbound) {
 	}
 }
 
+function InRangeAbsolute(value,lowerbound,upperbound) {
+	if value > lowerbound and value < upperbound {
+		return true
+	} else {
+		return false
+	}
+}
+
 //The j argument is input if the array being sorted is 2d dimensional and must be sorted by a certain index 
 function QuickSort(array,j=0) {
 	sorted = false;
@@ -50,8 +58,76 @@ function QuickSort(array,j=0) {
 }
 
 ///obstactles argument should be an array of objects that should obstruct the ray
-///function returns an array with [0] being the x coordinate of where the ray is hit, [1] being y,
-///and [2] being the name of the collided obstacle
+function RayCast_x(startx,starty,tox,toy,obstacles) {
+	collisions = ds_list_create()
+	errorMarginx = undefined
+	errorMarginy = undefined
+	for(i=0;i<array_length(obstacles);i++) {
+		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
+	}
+	if collisions != noone {
+		errorMarginx = tox-startx
+		errorMarginy = toy-starty
+		while abs(errorMarginx)>=1 or abs(errorMarginy)>=1 {
+			errorMarginx/=2
+			errorMarginy/=2
+			for(i=0;i<ds_list_size(collisions);i++) {
+				//temp3 holds the collision instance value in case obstruction needs to be changed
+				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				if temp3 != noone {
+					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
+					temp = tox
+					temp2 = toy
+					tox-=errorMarginx
+					toy-=errorMarginy
+					if tox != temp or toy != temp2 {
+						obstruction = temp3
+					}
+				}
+			}
+		}
+	}
+	ds_list_destroy(collisions)
+	if errorMarginx != undefined and errorMarginy != undefined {
+		return errorMarginx
+	}	
+}
+
+function RayCast_y(startx,starty,tox,toy,obstacles) {
+	collisions = ds_list_create()
+	errorMarginx = undefined
+	errorMarginy = undefined
+	for(i=0;i<array_length(obstacles);i++) {
+		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
+	}
+	if collisions != noone {
+		errorMarginx = tox-startx
+		errorMarginy = toy-starty
+		while abs(errorMarginx)>=1 or abs(errorMarginy)>=1 {
+			errorMarginx/=2
+			errorMarginy/=2
+			for(i=0;i<ds_list_size(collisions);i++) {
+				//temp3 holds the collision instance value in case obstruction needs to be changed
+				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				if temp3 != noone {
+					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
+					temp = tox
+					temp2 = toy
+					tox-=errorMarginx
+					toy-=errorMarginy
+					if tox != temp or toy != temp2 {
+						obstruction = temp3
+					}
+				}
+			}
+		}
+	}
+	ds_list_destroy(collisions)
+	if errorMarginx != undefined and errorMarginy != undefined {
+		return toy-2*errorMarginy
+	}	
+}
+
 function RayCast(startx,starty,tox,toy,obstacles) {
 	collisions = ds_list_create()
 	errorMarginx = undefined
@@ -83,12 +159,11 @@ function RayCast(startx,starty,tox,toy,obstacles) {
 	}
 	ds_list_destroy(collisions)
 	if errorMarginx != undefined and errorMarginy != undefined {
-		return [tox-errorMarginx,toy-2*errorMarginy,obstruction]
+		return obstruction
 	}	
 }
 
 #endregion
-
 
 #region Saving
 
@@ -162,7 +237,9 @@ function GetIsoCentery(tileheight,x,y) {
 		return temp + tileheight/2*sqrt(3)
 #endregion
 
-#region controlls
+#endregion
+
+#region Controlls
 function ControllerList() {
 	output = []
 	k = gamepad_get_device_count()
@@ -224,7 +301,7 @@ function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
 	angleraw = GetStickAngle_R(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
 }
-#endregion
 	}
 	
 }
+#endregion
