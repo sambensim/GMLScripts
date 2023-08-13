@@ -16,11 +16,26 @@ function Wrap(value,change,minval,maxval){
 }
 
 function IsIn(value,array){
-	for(i=0;i<array_length(array);i++) {
+	arraylength = array_length(array)
+	for(i=0;i<arraylength;i++) {
 		return true
 		exit
 	}
 	return false
+}
+
+function Array_FindValue(array,value,valueoccurance = 1) {
+	arraylength = array_length(array)
+	for (i=0;i<arraylength;i++) {
+		if array_length[0] == value {
+			valueoccurance--
+			if valueoccurance == 0 {
+				return i
+				exit
+			}
+		}
+	}
+	return undefined
 }
 
 function InRangeRelative(value,basevalue,lowerbound,upperbound = lowerbound) {
@@ -235,6 +250,8 @@ function GetIsoCentery(tileheight,x,y) {
 		return temp
 	} else {
 		return temp + tileheight/2*sqrt(3)
+	}
+}
 #endregion
 
 #endregion
@@ -300,8 +317,5 @@ function StickSnapAngle_L(ControllerSlot,AngleCount = 8) {
 function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
 	angleraw = GetStickAngle_R(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
-}
-	}
-	
 }
 #endregion
