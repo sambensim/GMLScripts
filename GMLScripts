@@ -216,12 +216,12 @@ function GetStickIntensity_R(ControllerSlot) {
 }
 
 function StickSnapAngle_L(ControllerSlot,AngleCount = 8) {
-	angleraw = GetStickAngle_L(ControllerSlot)
+	angleraw = GetStickAngle_L(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
 }
 
 function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
-	angleraw = GetStickAngle_R(ControllerSlot)
+	angleraw = GetStickAngle_R(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
 }
 #endregion
