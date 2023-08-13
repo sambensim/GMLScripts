@@ -1,0 +1,230 @@
+#region general
+function chance(percent,decimalplaces = 2){
+	temp = irandom_range(1,power(10,decimalplaces+2))
+	return temp/(power(10,decimalplaces)) <= percent
+}
+
+function Wrap(value,change,minval,maxval){
+	value+=change
+	while value > maxval or value < minval {
+		if value > maxval { value-=(maxval-minval)
+		}
+		if value < minval { value += (maxval-minval)
+		}
+	}
+	return value
+}
+
+function IsIn(value,array){
+	for(i=0;i<array_length(array);i++) {
+		return true
+		exit
+	}
+	return false
+}
+
+function InRangeRelative(value,basevalue,lowerbound,upperbound = lowerbound) {
+//lower and upper bounds are difference from basevalue
+	if value > basevalue-lowerbound and value < basevalue+upperbound {
+		return true
+	} else {
+		return false
+	}
+}
+
+//The j argument is input if the array being sorted is 2d dimensional and must be sorted by a certain index 
+function QuickSort(array,j=0) {
+	sorted = false;
+	while(sorted==false) {
+		sorted = true
+		for(i=1;i<array_length(array);i++) {
+			if array[i-1][j]>array[i][j] {
+				tempnum = array[i-1]
+				array[i-1] = array[i]
+				array[i] = tempnum
+				sorted = false
+			}
+		}
+	}
+	return array
+}
+
+///obstactles argument should be an array of objects that should obstruct the ray
+///function returns an array with [0] being the x coordinate of where the ray is hit, [1] being y,
+///and [2] being the name of the collided obstacle
+function RayCast(startx,starty,tox,toy,obstacles) {
+	collisions = ds_list_create()
+	errorMarginx = undefined
+	errorMarginy = undefined
+	for(i=0;i<array_length(obstacles);i++) {
+		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
+	}
+	if collisions != noone {
+		errorMarginx = tox-startx
+		errorMarginy = toy-starty
+		while abs(errorMarginx)>=1 or abs(errorMarginy)>=1 {
+			errorMarginx/=2
+			errorMarginy/=2
+			for(i=0;i<ds_list_size(collisions);i++) {
+				//temp3 holds the collision instance value in case obstruction needs to be changed
+				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				if temp3 != noone {
+					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
+					temp = tox
+					temp2 = toy
+					tox-=errorMarginx
+					toy-=errorMarginy
+					if tox != temp or toy != temp2 {
+						obstruction = temp3
+					}
+				}
+			}
+		}
+	}
+	ds_list_destroy(collisions)
+	if errorMarginx != undefined and errorMarginy != undefined {
+		return [tox-errorMarginx,toy-2*errorMarginy,obstruction]
+	}	
+}
+
+#endregion
+
+
+#region Saving
+
+function Save(dataarray,saveto = "savedgame.save") {
+	var _string = json_stringify(dataarray)
+	var _buffer = buffer_create(string_byte_length(_string)+1,buffer_fixed,1)
+	buffer_write(_buffer,buffer_string,_string)
+	buffer_save(_buffer,saveto)
+	buffer_delete(_buffer)
+	show_debug_message("Game saved " + _string)
+}
+
+function Load(loadfrom = "savedgame.save") {
+	if (file_exists(loadfrom)) {
+		var _buffer = buffer_load(loadfrom)
+		var _string = buffer_read(_buffer,buffer_string)
+		var _loadData = json_parse(_string)
+		//SET RELEVANT DATA USING _loadData
+		return _loadData
+		show_debug_message("Game loaded " + _string)
+	}
+}
+
+#endregion
+
+#region CellCenter
+#region grid
+function GetCellCenterx(gridsize,x) {
+	return x-(x%gridsize)+(0.5*gridsize)
+}
+function GetCellCentery(gridsize,y) {
+	return y-(y%gridsize)+(0.5*gridsize)
+}
+#endregion
+
+#region hex
+function GetHexCenterx(hexwidth,x,y) {
+//the hexes here are assumed to be able to stack vertically but not horizontally
+//If they are not: switch use x function for y and visa versa
+//The x and y inputs should also be switched, and hexwidth should be hex height
+	return x-(x%(hexwidth/4*3)) + (hexwidth/4)*sqrt(3)
+}
+function GetHexCentery(hexwidth,x,y) {
+//the hexes here are assumed to be able to stack vertically but not horizontally
+//If they are not: switch use x function for y and visa versa
+//The x and y inputs should also be switched, and hexwidth should be hex height (I think)
+	temp = y-(y%(hexwidth/2*sqrt(3))) + (hexwidth/4)*sqrt(3)*(floor(x/(hexwidth/4*3))%2)
+	if abs(y-temp) < hexwidth/4*sqrt(3) { //the four here might supposed to be 8
+		return temp
+	} else {
+		return temp + hexwidth/2*sqrt(3)
+	}
+}
+#endregion
+
+#region iso
+
+function GetIsoCenterx(tileheight,x,y) {
+	tileheight = tileheight-sqrt(sqr(tileheight/2)/2)
+	return x-(x%(tileheight/4*3)) + (tileheight/4)*sqrt(3)
+}
+
+function GetIsoCentery(tileheight,x,y) {
+	tileheight = tileheight-sqrt(sqr(tileheight/2)/2)
+	show_debug_message(tileheight)
+	temp = y-(y%(tileheight/2*sqrt(3))) + (tileheight/4)*sqrt(3)*(floor(x/(tileheight/4*3))%2)
+	
+	if abs(y-temp) < tileheight/4*sqrt(3) { //the four here might supposed to be 8
+		return temp
+	} else {
+		return temp + tileheight/2*sqrt(3)
+#endregion
+
+#region controlls
+function ControllerList() {
+	output = []
+	k = gamepad_get_device_count()
+	for(i=0;i<k;i++) {
+		if gamepad_is_connected(i) {
+			array_push(output,i)
+		}
+	}
+	return output
+	show_debug_message(string_concat("Controller Slots Used: ",output))
+}
+
+function GetStickX_L(ControllerSlot) {
+	return gamepad_axis_value(ControllerSlot, gp_axislh)
+}
+
+function GetStickY_L(ControllerSlot) {
+	return gamepad_axis_value(ControllerSlot, gp_axislv)
+}
+
+function GetStickX_R(ControllerSlot) {
+	return gamepad_axis_value(ControllerSlot, gp_axisrh)
+}
+
+function GetStickY_R(ControllerSlot) {
+	return gamepad_axis_value(ControllerSlot, gp_axisrv)
+}
+
+function GetStickAngle_L(ControllerSlot) {
+	xx = gamepad_axis_value(ControllerSlot, gp_axislh)
+	yy = gamepad_axis_value(ControllerSlot, gp_axislv)
+	return point_direction(0,0,xx,yy)
+}
+
+function GetStickIntensity_L(ControllerSlot) {
+	xx = gamepad_axis_value(ControllerSlot, gp_axislh)
+	yy = gamepad_axis_value(ControllerSlot, gp_axislv)
+	return point_distance(0,0,xx,yy)
+}
+
+function GetStickAngle_R(ControllerSlot) {
+	xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
+	yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
+	return point_direction(0,0,xx,yy)
+}
+
+function GetStickIntensity_R(ControllerSlot) {
+	xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
+	yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
+	return point_distance(0,0,xx,yy)
+}
+
+function StickSnapAngle_L(ControllerSlot,AngleCount = 8) {
+	angleraw = GetStickAngle_L(ControllerSlot)
+	return angleraw-angleraw%(360/AngleCount)
+}
+
+function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
+	angleraw = GetStickAngle_R(ControllerSlot)
+	return angleraw-angleraw%(360/AngleCount)
+}
+#endregion
+	}
+	
+}
