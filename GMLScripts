@@ -319,3 +319,15 @@ function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
 	return angleraw-angleraw%(360/AngleCount)
 }
 #endregion
+
+#region debuging
+
+function Debug_StartTimer() {
+	global.debugtimer = get_timer()
+}
+
+function Debug_ReturnTimer() {
+	show_debug_message("Timer: "+str(global.debugtimer/1000)+"ms")
+}
+
+#endregion
