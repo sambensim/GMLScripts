@@ -340,8 +340,8 @@ function Camera_SetPos(camera,x,y,zoom=1,rumble=0){
 	var view_width = camera_get_view_width(view_camera[0])
 	var view_height = camera_get_view_height(view_camera[0])
 	camera_set_view_size(camera, zoom*view_width,zoom*view_height)
-	var camera_x = clamp(x-(zoom*view_width*0.5)-(random_range(-range,range)), 0, room_width-(camera_get_view_width(view_width)))
-	var camera_y = clamp(y-(zoom*view_height*0.5)-(random_range(-range,range)), -100, room_height-(camera_get_view_height(view_height)))
+	var camera_x = clamp(x-(zoom*view_width*0.5)-(random_range(-rumble,rumble)), 0, room_width-(camera_get_view_width(view_width)))
+	var camera_y = clamp(y-(zoom*view_height*0.5)-(random_range(-rumble,rumble)), -100, room_height-(camera_get_view_height(view_height)))
 	camera_set_view_pos(camera,camera_x, camera_y)
 }
 
