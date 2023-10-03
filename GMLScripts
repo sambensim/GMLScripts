@@ -16,7 +16,7 @@ function Wrap(value,change,minval,maxval){
 }
 
 function IsIn(value,array){
-	arraylength = array_length(array)
+	var arraylength = array_length(array)
 	for(var i=0;i<arraylength;i++) {
 		if array[i] == value {
 			return true
@@ -27,8 +27,8 @@ function IsIn(value,array){
 }
 
 function Array_FindValue(array,value,valueoccurance = 1) {
-	arraylength = array_length(array)
-	for (i=0;i<arraylength;i++) {
+	var arraylength = array_length(array)
+	for (var i=0;i<arraylength;i++) {
 		if array_length[0] == value {
 			valueoccurance--
 			if valueoccurance == 0 {
@@ -59,12 +59,12 @@ function InRangeAbsolute(value,lowerbound,upperbound) {
 
 //The j argument is input if the array being sorted is 2d dimensional and must be sorted by a certain index 
 function QuickSort(array,j=0) {
-	sorted = false;
+	var sorted = false;
 	while(sorted==false) {
-		sorted = true
-		for(i=1;i<array_length(array);i++) {
+		var sorted = true
+		for(var i=1;i<array_length(array);i++) {
 			if array[i-1][j]>array[i][j] {
-				tempnum = array[i-1]
+				var tempnum = array[i-1]
 				array[i-1] = array[i]
 				array[i] = tempnum
 				sorted = false
@@ -76,9 +76,9 @@ function QuickSort(array,j=0) {
 
 ///obstactles argument should be an array of objects that should obstruct the ray
 function RayCast_x(startx,starty,tox,toy,obstacles) {
-	collisions = ds_list_create()
-	errorMarginx = undefined
-	errorMarginy = undefined
+	var collisions = ds_list_create()
+	var errorMarginx = undefined
+	var errorMarginy = undefined
 	for(i=0;i<array_length(obstacles);i++) {
 		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
 	}
@@ -90,15 +90,15 @@ function RayCast_x(startx,starty,tox,toy,obstacles) {
 			errorMarginy/=2
 			for(i=0;i<ds_list_size(collisions);i++) {
 				//temp3 holds the collision instance value in case obstruction needs to be changed
-				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				var temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
 				if temp3 != noone {
 					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
-					temp = tox
-					temp2 = toy
+					var temp = tox
+					var temp2 = toy
 					tox-=errorMarginx
 					toy-=errorMarginy
 					if tox != temp or toy != temp2 {
-						obstruction = temp3
+						var obstruction = temp3
 					}
 				}
 			}
@@ -111,9 +111,9 @@ function RayCast_x(startx,starty,tox,toy,obstacles) {
 }
 
 function RayCast_y(startx,starty,tox,toy,obstacles) {
-	collisions = ds_list_create()
-	errorMarginx = undefined
-	errorMarginy = undefined
+	var collisions = ds_list_create()
+	var errorMarginx = undefined
+	var errorMarginy = undefined
 	for(i=0;i<array_length(obstacles);i++) {
 		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
 	}
@@ -125,15 +125,15 @@ function RayCast_y(startx,starty,tox,toy,obstacles) {
 			errorMarginy/=2
 			for(i=0;i<ds_list_size(collisions);i++) {
 				//temp3 holds the collision instance value in case obstruction needs to be changed
-				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				var temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
 				if temp3 != noone {
 					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
-					temp = tox
-					temp2 = toy
+					var temp = tox
+					var temp2 = toy
 					tox-=errorMarginx
 					toy-=errorMarginy
 					if tox != temp or toy != temp2 {
-						obstruction = temp3
+						var obstruction = temp3
 					}
 				}
 			}
@@ -146,9 +146,9 @@ function RayCast_y(startx,starty,tox,toy,obstacles) {
 }
 
 function RayCast(startx,starty,tox,toy,obstacles) {
-	collisions = ds_list_create()
-	errorMarginx = undefined
-	errorMarginy = undefined
+	var collisions = ds_list_create()
+	var errorMarginx = undefined
+	var errorMarginy = undefined
 	for(i=0;i<array_length(obstacles);i++) {
 		collision_line_list(startx,starty,tox,toy,obstacles[i],true,true,collisions,true)
 	}
@@ -160,15 +160,15 @@ function RayCast(startx,starty,tox,toy,obstacles) {
 			errorMarginy/=2
 			for(i=0;i<ds_list_size(collisions);i++) {
 				//temp3 holds the collision instance value in case obstruction needs to be changed
-				temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
+				var temp3 = collision_line(startx,starty,tox-errorMarginx,toy-errorMarginy,ds_list_find_value(collisions,i),true,true)
 				if temp3 != noone {
 					//easy but probably not effective solution, temp vars check if tox or toy were changed, and updates obstruction if so
-					temp = tox
-					temp2 = toy
+					var temp = tox
+					var temp2 = toy
 					tox-=errorMarginx
 					toy-=errorMarginy
 					if tox != temp or toy != temp2 {
-						obstruction = temp3
+						var obstruction = temp3
 					}
 				}
 			}
@@ -227,7 +227,7 @@ function GetHexCentery(hexwidth,x,y) {
 //the hexes here are assumed to be able to stack vertically but not horizontally
 //If they are not: switch use x function for y and visa versa
 //The x and y inputs should also be switched, and hexwidth should be hex height (I think)
-	temp = y-(y%(hexwidth/2*sqrt(3))) + (hexwidth/4)*sqrt(3)*(floor(x/(hexwidth/4*3))%2)
+	var temp = y-(y%(hexwidth/2*sqrt(3))) + (hexwidth/4)*sqrt(3)*(floor(x/(hexwidth/4*3))%2)
 	if abs(y-temp) < hexwidth/4*sqrt(3) { //the four here might supposed to be 8
 		return temp
 	} else {
@@ -246,7 +246,7 @@ function GetIsoCenterx(tileheight,x,y) {
 function GetIsoCentery(tileheight,x,y) {
 	tileheight = tileheight-sqrt(sqr(tileheight/2)/2)
 	show_debug_message(tileheight)
-	temp = y-(y%(tileheight/2*sqrt(3))) + (tileheight/4)*sqrt(3)*(floor(x/(tileheight/4*3))%2)
+	var temp = y-(y%(tileheight/2*sqrt(3))) + (tileheight/4)*sqrt(3)*(floor(x/(tileheight/4*3))%2)
 	
 	if abs(y-temp) < tileheight/4*sqrt(3) { //the four here might supposed to be 8
 		return temp
@@ -260,9 +260,9 @@ function GetIsoCentery(tileheight,x,y) {
 
 #region Controlls
 function ControllerList() {
-	output = []
-	k = gamepad_get_device_count()
-	for(i=0;i<k;i++) {
+	var output = []
+	var k = gamepad_get_device_count()
+	for(var i=0;i<k;i++) {
 		if gamepad_is_connected(i) {
 			array_push(output,i)
 		}
@@ -288,36 +288,36 @@ function GetStickY_R(ControllerSlot) {
 }
 
 function GetStickAngle_L(ControllerSlot) {
-	xx = gamepad_axis_value(ControllerSlot, gp_axislh)
-	yy = gamepad_axis_value(ControllerSlot, gp_axislv)
+	var xx = gamepad_axis_value(ControllerSlot, gp_axislh)
+	var yy = gamepad_axis_value(ControllerSlot, gp_axislv)
 	return point_direction(0,0,xx,yy)
 }
 
 function GetStickIntensity_L(ControllerSlot) {
-	xx = gamepad_axis_value(ControllerSlot, gp_axislh)
-	yy = gamepad_axis_value(ControllerSlot, gp_axislv)
+	var xx = gamepad_axis_value(ControllerSlot, gp_axislh)
+	var yy = gamepad_axis_value(ControllerSlot, gp_axislv)
 	return point_distance(0,0,xx,yy)
 }
 
 function GetStickAngle_R(ControllerSlot) {
-	xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
-	yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
+	var xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
+	var yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
 	return point_direction(0,0,xx,yy)
 }
 
 function GetStickIntensity_R(ControllerSlot) {
-	xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
-	yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
+	var xx = gamepad_axis_value(ControllerSlot, gp_axisrh)
+	var yy = gamepad_axis_value(ControllerSlot, gp_axisrv)
 	return point_distance(0,0,xx,yy)
 }
 
 function StickSnapAngle_L(ControllerSlot,AngleCount = 8) {
-	angleraw = GetStickAngle_L(ControllerSlot)+(360/(2*AngleCount))
+	var angleraw = GetStickAngle_L(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
 }
 
 function StickSnapAngle_R(ControllerSlot,AngleCount = 8) {
-	angleraw = GetStickAngle_R(ControllerSlot)+(360/(2*AngleCount))
+	var angleraw = GetStickAngle_R(ControllerSlot)+(360/(2*AngleCount))
 	return angleraw-angleraw%(360/AngleCount)
 }
 #endregion
