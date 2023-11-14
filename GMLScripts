@@ -1,5 +1,33 @@
 #region General
-function chance(percent,decimalplaces = 2){
+
+function Mouse_InArea_Rect(centerx,xdiff,centery,ydiff,device = 0) {
+	var xvalue = device_mouse_raw_x(device)
+	var yvalue = device_mouse_raw_y(device)
+	if xvalue>centerx-xdiff and xvalue<centerx+xdiff and yvalue>centery-ydiff and yvalue>centery+ydiff {
+		return true
+	} else {
+		return false
+	}
+ }
+
+function Array_CreatePush(array,value,blankvalue = -1) {
+	if array != blankvalue {
+		array_push(array,value)
+	} else {
+		array = [value]
+	}
+	return array
+}
+
+function Flip(boolvariable) {
+	if boolvariable {
+		return false
+	} else {
+		return true
+	}
+}
+
+function Chance(percent,decimalplaces = 2){
 	temp = irandom_range(1,power(10,decimalplaces+2))
 	return temp/(power(10,decimalplaces)) <= percent
 }
@@ -258,7 +286,7 @@ function GetIsoCentery(tileheight,x,y) {
 
 #endregion
 
-#region Controlls
+#region Controls
 function ControllerList() {
 	var output = []
 	var k = gamepad_get_device_count()
